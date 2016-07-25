@@ -17,6 +17,7 @@ describe User do
   it { should respond_to(:remember_token) }
   it { should respond_to(:authenticate) }
   it { should respond_to(:admin) }
+  it { should respond_to(:reviews)}
   it { should be_valid }
 
   describe "with admin attribute set to 'true'" do
@@ -108,10 +109,35 @@ describe User do
  describe "with a password that's too short" do
   before { @user.password = @user.password_confirmation = "a" * 5 }
   it { should be_invalid }
-end
+  end
 
 describe "remember token" do
     before { @user.save }
     its(:remember_token) { should_not be_blank }
+  end
+
+  describe "reviews associations" do
+
+    before { @user.save }
+    let!(:older_review) do
+      FactoryGirl.create(:review, user: @user, created_at: 1.day.ago)
+    end
+    let!(:newer_review) do
+      FactoryGirl.create(:review, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "should have the right reviews in the right order" do
+      @user.reviews.should == [newer_review, older_review]
+    end
+
+
+    it "should destroy associated reviews" do
+      reviews = @user.reviews.dup
+      @user.destroy
+      reviews.should_not be_empty
+      reviews.each do |review|
+        Review.find_by_id(review.id).should be_nil
+      end
+    end
   end
 end

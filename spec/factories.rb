@@ -9,4 +9,9 @@ FactoryGirl.define do
       admin true
     end
   end
+
+  factory :review do
+    content "Wings of Fire"
+    user
+  end
 end
