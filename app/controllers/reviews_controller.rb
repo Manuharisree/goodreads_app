@@ -8,7 +8,8 @@ class ReviewsController < ApplicationController
   	@review=current_user.reviews.build(params[:review])
   	if @review.save
   		flash[:success]="Review is created"
-  		redirect_to root_url
+      #@book=Book.find_by_title(params[:review][:title])
+  		redirect_to current_user
   	else
   		render 'static_pages/home'
   	end

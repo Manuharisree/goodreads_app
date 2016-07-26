@@ -1,7 +1,10 @@
 GoodreadsApp::Application.routes.draw do
+  get "books/new"
+
   resources :users
   resources :sessions,only: [:new, :create, :destroy]
   resources :reviews, only: [:create, :destroy]
+  resources :books, only: [:new, :create, :destroy, :index, :show]
 
 	root to: 'static_pages#home'
   match '/help', to: 'static_pages#help'
